@@ -34,14 +34,9 @@ jobs:
 
       - name: Build with Next.js
         run: |
-          if [ "${{ github.repository }}" = "qingshanjiluo/qingshanjiluo.github.io" ]; then
-            echo "Building for root domain (no basePath)"
-            npm run build
-          else
-            REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-            echo "Building with basePath: /$REPO_NAME"
-            NEXT_PUBLIC_BASE_PATH="/$REPO_NAME" npm run build
-          fi
+          # 明确设置 basePath 为 /CardEngine-diy
+          echo "Building with basePath: /CardEngine-diy"
+          NEXT_PUBLIC_BASE_PATH="/CardEngine-diy" npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
