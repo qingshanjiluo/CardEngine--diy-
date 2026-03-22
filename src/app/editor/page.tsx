@@ -9,16 +9,20 @@ import { GameBoard } from '@/components/game/GameBoard';
 import { ElementPanel } from '@/components/game/ElementPanel';
 import { BroadcastMessage } from '@/components/game/BroadcastMessage';
 import { DebugPanel } from '@/components/game/DebugPanel';
+import { MobileDrawer } from '@/components/ui/MobileDrawer';
 import { cn } from '@/lib/utils';
 import { useStore } from '@/lib/store';
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Layers, Play, Code2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Layers, Play, Code2, Settings, Grid3x3 } from 'lucide-react';
 
 export default function EditorPage() {
   const { currentPage } = useStore();
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [activeBottomTab, setActiveBottomTab] = useState<'elements' | 'console'>('elements');
   const [activeRightTab, setActiveRightTab] = useState<'preview' | 'debug'>('preview');
+  const [showMobileBlockPalette, setShowMobileBlockPalette] = useState(false);
+  const [showMobileGamePreview, setShowMobileGamePreview] = useState(false);
+  const [showMobileSettings, setShowMobileSettings] = useState(false);
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -42,10 +46,7 @@ export default function EditorPage() {
           {/* Mobile block palette toggle */}
           <div className="lg:hidden fixed bottom-4 left-4 z-50">
             <button
-              onClick={() => {
-                // 这里可以添加移动端积木库抽屉
-                alert('移动端积木库功能正在开发中');
-              }}
+              onClick={() => setShowMobileBlockPalette(true)}
               className="bg-brand-500 text-white p-3 rounded-full shadow-lg hover:bg-brand-600 transition-colors"
             >
               <Code2 className="w-5 h-5" />
@@ -155,10 +156,7 @@ export default function EditorPage() {
           {/* Mobile game preview toggle */}
           <div className="lg:hidden fixed bottom-4 right-4 z-50">
             <button
-              onClick={() => {
-                // 这里可以添加移动端游戏预览抽屉
-                alert('移动端游戏预览功能正在开发中');
-              }}
+              onClick={() => setShowMobileGamePreview(true)}
               className="bg-brand-500 text-white p-3 rounded-full shadow-lg hover:bg-brand-600 transition-colors"
             >
               <Play className="w-5 h-5" />
@@ -189,20 +187,45 @@ export default function EditorPage() {
             <span className="text-xs">日志</span>
           </button>
           <button
-            onClick={() => {
-              // 打开移动端设置菜单
-              alert('移动端设置功能正在开发中');
-            }}
-            className="flex flex-col items-center p-2 text-neutral-500"
+            onClick={() => setShowMobileSettings(true)}
+            className={cn(
+              'flex flex-col items-center p-2',
+              showMobileSettings ? 'text-brand-500' : 'text-neutral-500'
+            )}
           >
-            <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+            <Settings className="w-5 h-5 mb-1" />
             <span className="text-xs">设置</span>
           </button>
         </div>
       </main>
+
+      {/* Mobile Drawers */}
+      <MobileDrawer
+        isOpen={showMobileBlockPalette}
+        onClose={() => setShowMobileBlockPalette(false)}
+        title="积木库"
+        position="left"
+      >
+        <MobileBlockPaletteDrawer />
+      </MobileDrawer>
+
+      <MobileDrawer
+        isOpen={showMobileGamePreview}
+        onClose={() => setShowMobileGamePreview(false)}
+        title="游戏预览"
+        position="right"
+      >
+        <MobileGamePreviewDrawer />
+      </MobileDrawer>
+
+      <MobileDrawer
+        isOpen={showMobileSettings}
+        onClose={() => setShowMobileSettings(false)}
+        title="设置"
+        position="bottom"
+      >
+        <MobileSettingsDrawer />
+      </MobileDrawer>
     </div>
   );
 }
@@ -230,6 +253,87 @@ function ConsolePanel() {
           </div>
         ))
       )}
+    </div>
+  );
+}
+
+// Mobile Drawers
+function MobileBlockPaletteDrawer() {
+  return (
+    <div className="p-4">
+      <h4 className="font-semibold text-lg mb-4">积木库</h4>
+      <p className="text-sm text-neutral-600 mb-4">
+        在移动端选择积木进行编辑。点击积木可添加到画布。
+      </p>
+      <div className="grid grid-cols-2 gap-3">
+        {['事件', '控制', '动作', '侦测', '运算', '变量'].map((category) => (
+          <button
+            key={category}
+            className="p-4 bg-neutral-100 rounded-xl text-center hover:bg-neutral-200 transition-colors"
+          >
+            <div className="font-medium">{category}</div>
+            <div className="text-xs text-neutral-500 mt-1">点击查看</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MobileGamePreviewDrawer() {
+  const { project } = useStore();
+  
+  return (
+    <div className="p-4">
+      <h4 className="font-semibold text-lg mb-4">游戏预览</h4>
+      <div className="aspect-video bg-neutral-100 rounded-xl mb-4 flex items-center justify-center">
+        <div className="text-center">
+          <Play className="w-12 h-12 text-neutral-400 mx-auto mb-2" />
+          <p className="text-sm text-neutral-500">游戏预览区域</p>
+        </div>
+      </div>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-neutral-600">游戏状态</span>
+          <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded">准备中</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-neutral-600">当前玩家</span>
+          <span className="font-medium">{project.players[0]?.name || '未设置'}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MobileSettingsDrawer() {
+  const { project, updateProjectSettings } = useStore();
+  
+  return (
+    <div className="p-4">
+      <h4 className="font-semibold text-lg mb-4">设置</h4>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">项目名称</label>
+          <input
+            type="text"
+            defaultValue={project.name}
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg"
+            placeholder="输入项目名称"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">游戏描述</label>
+          <textarea
+            defaultValue={project.description}
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg h-24"
+            placeholder="描述你的游戏"
+          />
+        </div>
+        <button className="w-full py-3 bg-brand-500 text-white rounded-lg font-medium hover:bg-brand-600 transition-colors">
+          保存设置
+        </button>
+      </div>
     </div>
   );
 }

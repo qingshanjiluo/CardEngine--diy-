@@ -290,6 +290,12 @@ export function Header() {
         </div>
       </Modal>
 
+      {/* Recent Projects Modal */}
+      <RecentProjects
+        isOpen={showRecentProjects}
+        onClose={() => setShowRecentProjects(false)}
+      />
+
       {/* Assets Library Modal */}
       <AssetsLibrary
         isOpen={showAssetsLibrary}
