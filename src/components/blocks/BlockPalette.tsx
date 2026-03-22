@@ -79,7 +79,7 @@ function DraggableBlockItem({ type, def, onAdd }: DraggableBlockItemProps) {
 }
 
 export function BlockPalette() {
-  const { addBlock } = useStore();
+  const { addBlock, activeScriptTab, selectedElement } = useStore();
   // 展开状态管理，默认展开"事件"和"动作"类别
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set(['event', 'action'])
@@ -269,7 +269,7 @@ export function BlockPalette() {
                                 category: def.category,
                                 label: def.label,
                                 inputs: JSON.parse(JSON.stringify(def.inputs)),
-                              })}
+                              }, activeScriptTab)}
                             />
                           ))}
                         </div>

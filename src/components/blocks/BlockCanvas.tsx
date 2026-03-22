@@ -75,8 +75,9 @@ export function BlockCanvas() {
           inputs: data.inputs,
         };
         
-        // 如果有指定插入位置，需要特殊处理
-        addBlock(newBlock);
+        // 根据当前激活的标签页决定添加到全局脚本还是元素脚本
+        const target = activeScriptTab;
+        addBlock(newBlock, target);
       } else if (data.type === 'move-block' && data.index !== undefined && insertIndex !== undefined) {
         // 重新排序
         if (data.index !== insertIndex && data.index !== insertIndex - 1) {
@@ -88,7 +89,7 @@ export function BlockCanvas() {
       console.error('Drop error:', err);
     }
     setDraggedBlockId(null);
-  }, [addBlock, moveBlock]);
+  }, [addBlock, moveBlock, activeScriptTab]);
 
   // 处理积木项的拖拽事件
   const handleBlockDragStart = useCallback((index: number, blockId: string) => {
@@ -201,7 +202,7 @@ export function BlockCanvas() {
               category: 'event',
               label: '当游戏开始时',
               inputs: {},
-            });
+            }, activeScriptTab);
           }}>
             <Plus className="w-4 h-4 mr-1" />
             添加积木
