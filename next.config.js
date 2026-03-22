@@ -8,8 +8,10 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-  // GitHub Pages部署需要basePath
-  basePath: process.env.NODE_ENV === 'production' && process.env.GITHUB_PAGES === 'true' ? '/CardEngine' : '',
+  // 根据部署环境设置basePath
+  // 选项1: 如果部署在根目录 (https://username.github.io/)，设置为 ''
+  // 选项2: 如果部署在子目录 (https://username.github.io/repo/)，设置为 '/repo'
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
 }
 
 module.exports = nextConfig
